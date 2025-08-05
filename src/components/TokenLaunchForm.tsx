@@ -4,12 +4,12 @@ import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { Upload, X, Copy, ExternalLink, Shield, Lock, Unlock, ArrowLeft, Rocket, Sparkles } from 'lucide-react';
-import Image from 'next/image';
+import { Upload, X, Shield } from 'lucide-react';
 
 interface TokenFormData {
   name: string;
   symbol: string;
+  decimals: number;
   supply: number;
   description: string;
   creator: string;
@@ -19,7 +19,7 @@ interface TokenFormData {
   logo: File | null;
   revokeFreeze: boolean;
   revokeMint: boolean;
-  revokeUpdate: boolean;
+  // Note: revokeUpdate removed - not applicable to SPL tokens
   revokeAll: boolean;
 }
 
@@ -28,11 +28,12 @@ interface TokenLaunchFormProps {
 }
 
 export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
-  const { connected } = useWallet();
+  const { connected, wallet, publicKey, sendTransaction, signTransaction, signAllTransactions, connect } = useWallet();
   const [formData, setFormData] = useState<TokenFormData>({
     name: '',
     symbol: '',
-    supply: 1000000,
+    decimals: 9,
+    supply: 1000000000,
     description: '',
     creator: '',
     website: '',
@@ -41,7 +42,6 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
     logo: null,
     revokeFreeze: false,
     revokeMint: false,
-    revokeUpdate: false,
     revokeAll: false,
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -73,166 +73,279 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
   };
 
   const calculateTotalCost = () => {
-    let cost = 0.01; // Base cost
-    if (formData.revokeFreeze) cost += 0.005;
-    if (formData.revokeMint) cost += 0.005;
-    if (formData.revokeUpdate) cost += 0.005;
-    if (formData.revokeAll) cost += 0.01;
+    let cost = 0.07; // Base cost updated to 0.07 SOL
+    if (formData.revokeFreeze) cost += 0.01;
+    if (formData.revokeMint) cost += 0.01;
+    // Note: revokeUpdate is not applicable to SPL tokens
     return cost;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!connected) {
+    
+          console.log('Wallet state:', { 
+        connected, 
+        publicKey: publicKey?.toString(), 
+        wallet: !!wallet,
+        sendTransaction: !!sendTransaction,
+        signTransaction: !!signTransaction 
+      });
+    
+    if (!connected || !publicKey) {
       alert('Please connect your wallet first!');
+      return;
+    }
+
+    if (!sendTransaction) {
+      alert('Wallet does not support required functionality. Please try reconnecting.');
       return;
     }
     
     setIsLoading(true);
-    // TODO: Implement actual token creation logic
-    setTimeout(() => {
-      setIsLoading(false);
-      // Simulate successful token creation
+    
+    try {
+      // Import the token service
+      const { TokenService } = await import('@/services/tokenService');
+      const tokenService = new TokenService();
+      
+      // Create a wallet adapter object with all required methods
+      const walletAdapter = {
+        publicKey,
+        sendTransaction,
+        signTransaction,
+        signAllTransactions
+      };
+      
+      // Create the token
+      const result = await tokenService.createToken(walletAdapter, {
+        ...formData,
+        logo: formData.logo || undefined
+      });
+      
+      // Success - call the onSuccess callback
       onSuccess({
         name: formData.name,
         symbol: formData.symbol,
-        address: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
-        transactionId: '5KKs8UQKqH1GUkoh5LueNGWDiVq1uD4gqjJTb4rrfU3x',
+        address: result.tokenAddress,
+        transactionId: result.transactionId,
         logo: logoPreview
       });
-    }, 3000);
+    } catch (error) {
+      console.error('Token creation failed:', error);
+      console.error('Full error object:', error);
+      
+      let errorMessage = 'Unknown error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      alert(`Token creation failed: ${errorMessage}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  return (
-    <div id="launch-form" className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pt-20">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
+  if (!connected) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center"
         >
-          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-100 to-blue-100 px-4 py-2 rounded-full mb-6">
-            <Image
-              src="/assets/FINAL MEMEMINT LOGO.png"
-              alt="MemeMint Logo"
-              width={20}
-              height={20}
-              className="w-5 h-5"
-            />
-            <Sparkles className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-medium text-purple-700">Token Creation</span>
+          <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
+            <Shield className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-4xl font-bold mb-4">Launch Your Memecoin</h1>
-          <p className="text-xl text-gray-600">Fill in the details and launch your token in seconds</p>
+          <h3 className="text-2xl font-semibold text-white mb-4">Connect Your Wallet</h3>
+          <p className="text-gray-400 mb-8 text-lg">Connect your Phantom wallet to start creating your token</p>
+          <WalletMultiButton className="btn-primary !py-4 !px-8 !text-lg" />
         </motion.div>
+      </div>
+    );
+  }
 
-        {!connected && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="modern-card p-6 mb-8 text-center"
-          >
-            <div className="w-16 h-16 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">Connect Your Wallet</h3>
-            <p className="text-gray-600 mb-4">Connect your Phantom wallet to get started</p>
-            <WalletMultiButton className="btn-primary" />
-          </motion.div>
-        )}
-
+  return (
+    <div className="max-w-6xl mx-auto flex justify-center">
+      <div className="w-full max-w-4xl">
+        {/* Form */}
         <motion.form
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="modern-card p-8 shadow-xl"
+          className="space-y-12"
         >
           {/* Basic Token Details */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <Rocket className="w-6 h-6 mr-3 text-purple-600" />
-              Token Details
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="form-label">Token Name *</label>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{marginBottom: '30px'}}>
+            {/* Token Name */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Token Name*</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className="form-input"
-                  placeholder="e.g., DogeMoon"
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="Luna Coin"
                   required
                 />
               </div>
-              <div>
-                <label className="form-label">Token Symbol *</label>
+              <p className="text-gray-500 text-sm font-light text-center" style={{marginTop: '30px'}}>Max 32 characters in your name</p>
+            </div>
+
+            {/* Token Symbol */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Token Symbol*</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
                 <input
                   type="text"
                   value={formData.symbol}
                   onChange={(e) => handleInputChange('symbol', e.target.value.toUpperCase())}
-                  className="form-input"
-                  placeholder="e.g., DOGE"
-                  maxLength={5}
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="Ex: SOL"
+                  maxLength={10}
                   required
                 />
               </div>
-              <div>
-                <label className="form-label">Total Supply *</label>
+            </div>
+
+            {/* Decimals */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Decimals*</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
+                <input
+                  type="number"
+                  value={formData.decimals}
+                  onChange={(e) => handleInputChange('decimals', parseInt(e.target.value))}
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="9"
+                  min="0"
+                  max="9"
+                  required
+                />
+              </div>
+              <p className="text-gray-500 text-sm font-light text-center" style={{marginTop: '30px'}}>Change the number of decimals for your token</p>
+            </div>
+
+            {/* Supply */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Supply*</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
                 <input
                   type="number"
                   value={formData.supply}
                   onChange={(e) => handleInputChange('supply', parseInt(e.target.value))}
-                  className="form-input"
-                  placeholder="1000000"
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="1 000 000 000"
                   min="1"
                   required
                 />
               </div>
-              <div>
-                <label className="form-label">Description</label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
-                  className="form-input"
-                  placeholder="Tell us about your token..."
-                  rows={3}
+              <p className="text-gray-500 text-sm font-light text-center" style={{marginTop: '30px'}}>The initial number of available tokens that will be created in your wallet</p>
+            </div>
+          </div>
+
+          {/* Description */}
+          <div className="flex flex-col items-center" style={{marginBottom: '30px'}}>
+            <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Description</label>
+            <div className="w-full bg-white/5 border border-white/10 rounded-3xl px-8 py-6 text-center">
+              <textarea
+                value={formData.description}
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none resize-none text-center"
+                placeholder="Tell the world about your amazing token..."
+                rows={4}
+              />
+            </div>
+          </div>
+
+          {/* Creator Info and Social Links */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{marginBottom: '30px'}}>
+            {/* Creator Info */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Creator Info</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
+                <input
+                  type="text"
+                  value={formData.creator}
+                  onChange={(e) => handleInputChange('creator', e.target.value)}
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="Your name or handle"
+                />
+              </div>
+            </div>
+
+            {/* Website */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Website URL</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
+                <input
+                  type="url"
+                  value={formData.website}
+                  onChange={(e) => handleInputChange('website', e.target.value)}
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="https://yourwebsite.com"
+                />
+              </div>
+            </div>
+
+            {/* Telegram */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Telegram</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
+                <input
+                  type="text"
+                  value={formData.telegram}
+                  onChange={(e) => handleInputChange('telegram', e.target.value)}
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="@yourchannel"
+                />
+              </div>
+            </div>
+
+            {/* Twitter */}
+            <div className="flex flex-col items-center">
+              <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>X (Twitter)</label>
+              <div className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-6 text-center">
+                <input
+                  type="text"
+                  value={formData.twitter}
+                  onChange={(e) => handleInputChange('twitter', e.target.value)}
+                  className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
+                  placeholder="@yourhandle"
                 />
               </div>
             </div>
           </div>
 
           {/* Logo Upload */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <Upload className="w-6 h-6 mr-3 text-purple-600" />
-              Token Logo
-            </h2>
-            <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-purple-400 transition-colors">
+          <div className="flex flex-col items-center" style={{marginBottom: '30px'}}>
+            <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Token Logo (Optional)</label>
+            <div className="w-full border-2 border-dashed border-white/20 rounded-3xl p-12 text-center hover:border-green-500/50 transition-colors">
               {logoPreview ? (
-                <div className="space-y-4">
-                  <img src={logoPreview} alt="Logo preview" className="w-32 h-32 mx-auto rounded-2xl object-cover shadow-lg" />
+                <div className="space-y-6">
+                  <img src={logoPreview} alt="Logo preview" className="w-32 h-32 mx-auto rounded-3xl object-cover" />
                   <button
                     type="button"
                     onClick={removeLogo}
-                    className="btn-secondary"
+                    className="text-red-400 hover:text-red-300 transition-colors flex items-center justify-center mx-auto text-lg"
                   >
-                    <X className="w-4 h-4 mr-2" />
+                    <X className="w-5 h-5 mr-2" />
                     Remove Logo
                   </button>
                 </div>
               ) : (
                 <div>
-                  <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Upload className="w-8 h-8 text-purple-600" />
+                  <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <Upload className="w-10 h-10 text-gray-400" />
                   </div>
-                  <p className="text-gray-600 mb-4">Upload your token logo</p>
+                  <p className="text-gray-400 mb-6 text-xl">Upload your token logo</p>
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="btn-secondary"
+                    className="bg-white/10 hover:bg-white/20 text-white px-8 py-4 rounded-2xl transition-colors text-lg"
                   >
                     Choose File
                   </button>
@@ -248,221 +361,113 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
             </div>
           </div>
 
-          {/* Optional Metadata */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <ExternalLink className="w-6 h-6 mr-3 text-purple-600" />
-              Optional Metadata
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="form-label">Creator Info</label>
-                <input
-                  type="text"
-                  value={formData.creator}
-                  onChange={(e) => handleInputChange('creator', e.target.value)}
-                  className="form-input"
-                  placeholder="Your name or handle"
-                />
+
+
+          {/* Revoke Authorities Section */}
+          <div style={{marginTop: '30px'}}>
+            <h2 className="text-2xl font-normal text-white" style={{marginBottom: '30px'}}>Revoke Authorities (Investor's Booster)</h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{marginBottom: '30px'}}>
+              {/* Revoke Freeze */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                <div className="flex items-center justify-between" style={{marginBottom: '30px'}}>
+                  <h3 className="text-lg font-normal text-white">Revoke Freeze</h3>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={formData.revokeFreeze}
+                      onChange={(e) => handleInputChange('revokeFreeze', e.target.checked)}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+                <p className="text-gray-400 text-sm font-light" style={{marginBottom: '30px'}}>No one will be able to freeze holders' token accounts anymore</p>
+                <span className="text-lg text-white font-normal">+0.01 SOL</span>
               </div>
-              <div>
-                <label className="form-label">Website URL</label>
-                <input
-                  type="url"
-                  value={formData.website}
-                  onChange={(e) => handleInputChange('website', e.target.value)}
-                  className="form-input"
-                  placeholder="https://yourwebsite.com"
-                />
-              </div>
-              <div>
-                <label className="form-label">Telegram</label>
-                <input
-                  type="text"
-                  value={formData.telegram}
-                  onChange={(e) => handleInputChange('telegram', e.target.value)}
-                  className="form-input"
-                  placeholder="@yourchannel"
-                />
-              </div>
-              <div>
-                <label className="form-label">X (Twitter)</label>
-                <input
-                  type="text"
-                  value={formData.twitter}
-                  onChange={(e) => handleInputChange('twitter', e.target.value)}
-                  className="form-input"
-                  placeholder="@yourhandle"
-                />
+
+              {/* Revoke Mint */}
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+                <div className="flex items-center justify-between" style={{marginBottom: '30px'}}>
+                  <h3 className="text-lg font-normal text-white">Revoke Mint</h3>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={formData.revokeMint}
+                      onChange={(e) => handleInputChange('revokeMint', e.target.checked)}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                </div>
+                <p className="text-gray-400 text-sm font-light" style={{marginBottom: '30px'}}>No one will be able to create more tokens anymore</p>
+                <span className="text-lg text-white font-normal">+0.01 SOL</span>
               </div>
             </div>
-          </div>
 
-          {/* Authority Options */}
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 flex items-center">
-              <Shield className="w-6 h-6 mr-3 text-purple-600" />
-              Security Options
-            </h2>
-            <div className="space-y-4">
-              <div className="modern-card p-6 modern-card-hover">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Lock className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <h3 className="font-semibold">Revoke Freeze Authority</h3>
-                      <p className="text-sm text-gray-600">Prevent anyone from freezing your token</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-sm text-gray-500">+0.005 SOL</span>
-                    <label className="toggle-switch">
-                      <input
-                        type="checkbox"
-                        checked={formData.revokeFreeze}
-                        onChange={(e) => handleInputChange('revokeFreeze', e.target.checked)}
-                      />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="modern-card p-6 modern-card-hover">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Unlock className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <h3 className="font-semibold">Revoke Mint Authority</h3>
-                      <p className="text-sm text-gray-600">Prevent additional tokens from being created</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-sm text-gray-500">+0.005 SOL</span>
-                    <label className="toggle-switch">
-                      <input
-                        type="checkbox"
-                        checked={formData.revokeMint}
-                        onChange={(e) => handleInputChange('revokeMint', e.target.checked)}
-                      />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="modern-card p-6 modern-card-hover">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <h3 className="font-semibold">Revoke Update Authority</h3>
-                      <p className="text-sm text-gray-600">Lock metadata permanently</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-sm text-gray-500">+0.005 SOL</span>
-                    <label className="toggle-switch">
-                      <input
-                        type="checkbox"
-                        checked={formData.revokeUpdate}
-                        onChange={(e) => handleInputChange('revokeUpdate', e.target.checked)}
-                      />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              <div className="modern-card p-6 modern-card-hover bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <Shield className="w-5 h-5 text-purple-600" />
-                    <div>
-                      <h3 className="font-semibold">Revoke All Authorities</h3>
-                      <p className="text-sm text-gray-600">Maximum security - revoke all authorities at once</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <span className="text-sm text-gray-500">+0.01 SOL</span>
-                    <label className="toggle-switch">
-                      <input
-                        type="checkbox"
-                        checked={formData.revokeAll}
-                        onChange={(e) => handleInputChange('revokeAll', e.target.checked)}
-                      />
-                      <span className="toggle-slider"></span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <p className="text-gray-400 text-center text-base font-light" style={{marginBottom: '30px'}}>
+              Solana Token has 3 authorities: Freeze Authority, Mint Authority, and Update Authority. Revoke them to attract more investors.
+            </p>
           </div>
 
           {/* Cost Summary */}
-          <div className="mb-8 modern-card p-6 bg-gradient-to-r from-gray-50 to-blue-50">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <Sparkles className="w-5 h-5 mr-2 text-purple-600" />
-              Cost Summary
-            </h3>
-            <div className="space-y-2">
-              <div className="flex justify-between">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-12" style={{marginTop: '30px'}}>
+            <h3 className="text-2xl font-normal text-white text-center" style={{marginBottom: '30px'}}>Cost Summary</h3>
+            <div className="text-lg font-light">
+              <div className="flex justify-between text-gray-300" style={{marginBottom: '30px'}}>
                 <span>Base token creation:</span>
-                <span>0.01 SOL</span>
+                <span className="font-normal">0.07 SOL</span>
               </div>
               {formData.revokeFreeze && (
-                <div className="flex justify-between">
+                <div className="flex justify-between text-gray-300" style={{marginBottom: '30px'}}>
                   <span>Revoke freeze authority:</span>
-                  <span>+0.005 SOL</span>
+                  <span className="font-normal">+0.01 SOL</span>
                 </div>
               )}
               {formData.revokeMint && (
-                <div className="flex justify-between">
+                <div className="flex justify-between text-gray-300" style={{marginBottom: '30px'}}>
                   <span>Revoke mint authority:</span>
-                  <span>+0.005 SOL</span>
+                  <span className="font-normal">+0.01 SOL</span>
                 </div>
               )}
-              {formData.revokeUpdate && (
-                <div className="flex justify-between">
-                  <span>Revoke update authority:</span>
-                  <span>+0.005 SOL</span>
-                </div>
-              )}
-              {formData.revokeAll && (
-                <div className="flex justify-between">
-                  <span>Revoke all authorities:</span>
-                  <span>+0.01 SOL</span>
-                </div>
-              )}
-              <div className="border-t pt-2 mt-4">
-                <div className="flex justify-between font-semibold text-lg">
-                  <span>Total Cost:</span>
-                  <span className="gradient-text">{calculateTotalCost().toFixed(3)} SOL</span>
+
+              <div className="border-t border-white/20" style={{paddingTop: '30px', marginTop: '30px'}}>
+                <div className="flex justify-between font-normal text-2xl">
+                  <span className="text-white">Total Cost:</span>
+                  <span className="gradient-text">{calculateTotalCost().toFixed(2)} SOL</span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Submit Button */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="submit"
-            disabled={!connected || isLoading}
-            className="w-full btn-primary text-lg py-4 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-          >
-            {isLoading ? (
-              <span className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Launching Token...
-              </span>
-            ) : (
-              <>
-                <Rocket className="w-5 h-5 mr-2" />
-                Launch My Token
-              </>
-            )}
-          </motion.button>
+          {/* Launch Button - Matching Homepage Style */}
+          <div className="flex justify-center mb-20" style={{marginTop: '30px'}}>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={isLoading}
+              className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-3 h-16 flex items-center overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ width: '400px' }}
+            >
+              <motion.div
+                className="absolute left-3 top-3 bottom-3 bg-white rounded-full flex items-center justify-center shadow-lg w-10"
+                whileHover={{ x: isLoading ? 0 : 330 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+              </motion.div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-white font-medium text-lg">
+                  {isLoading ? (
+                    <span className="flex items-center">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Creating Token...
+                    </span>
+                  ) : (
+                    'Launch My Token'
+                  )}
+                </span>
+              </div>
+            </motion.button>
+          </div>
         </motion.form>
       </div>
     </div>

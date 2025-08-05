@@ -1,180 +1,131 @@
 # 🚀 MemeMint - Solana Memecoin Launcher
 
-The ultimate no-code Solana memecoin launcher. Launch your memecoin in 30 seconds with zero coding required.
+The leading no-code Solana memecoin launcher. Create and deploy SPL tokens in seconds with a beautiful, professional interface.
 
 ## ✨ Features
 
-- **No-Code Token Creation**: Create Solana tokens without any programming knowledge
-- **Phantom Wallet Integration**: Seamless wallet connection and transaction signing
-- **Professional UI/UX**: Modern, responsive design with smooth animations
-- **Authority Management**: Optional authority revocation for enhanced security
-- **Metadata Support**: Full token metadata with logos and descriptions
-- **Instant Deployment**: Tokens are live on Solana in seconds
-- **Shareable Links**: Easy sharing and verification on Solscan
+- 🎯 **No-Code Token Creation** - Launch Solana tokens without coding
+- 🔗 **Phantom Wallet Integration** - Seamless wallet connection
+- 💰 **Authority Revocation Options** - Professional token controls
+- 🎨 **Modern UI/UX** - Clean, dark theme with green accents
+- ⚡ **Instant Deployment** - Deploy to Solana Devnet in 2 transactions
+- 🔍 **Solscan Integration** - Direct blockchain verification links
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 14, TypeScript, TailwindCSS
-- **Animations**: Framer Motion
-- **Wallet**: @solana/wallet-adapter (Phantom support)
-- **Blockchain**: @solana/web3.js, @solana/spl-token
-- **Icons**: Lucide React
-- **Deployment**: Vercel-ready
+- **Frontend**: Next.js 14, React, TypeScript
+- **Styling**: TailwindCSS, Framer Motion
+- **Blockchain**: Solana Web3.js, SPL Token
+- **Wallet**: Solana Wallet Adapter (Phantom)
 
-## 🚀 Quick Start
+## 🚀 Quick Deploy
 
-### Prerequisites
+### Option 1: Vercel (Recommended)
 
-- Node.js 18+ 
-- npm or yarn
-- Phantom wallet browser extension
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Initial commit"
+   git push origin main
+   ```
 
-### Installation
+2. **Deploy on Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "New Project"
+   - Import your GitHub repository
+   - Deploy automatically!
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd mememint
+3. **Add Custom Domain:**
+   - In Vercel dashboard → Settings → Domains
+   - Add your domain (e.g., `mememint.xyz`)
+   - Follow DNS instructions
+
+### Option 2: Netlify
+
+1. **Connect Repository:**
+   - Go to [netlify.com](https://netlify.com)
+   - "New site from Git"
+   - Connect GitHub repo
+
+2. **Build Settings:**
+   - Build command: `npm run build`
+   - Publish directory: `.next`
+
+### Option 3: Self-Hosted
+
+1. **Build for Production:**
+   ```bash
+   npm run build
+   npm start
+   ```
+
+2. **Docker Deployment:**
+   ```dockerfile
+   FROM node:18-alpine
+   WORKDIR /app
+   COPY package*.json ./
+   RUN npm install
+   COPY . .
+   RUN npm run build
+   EXPOSE 3000
+   CMD ["npm", "start"]
+   ```
+
+## 💰 Suggested Domains
+
+- `mememint.com` / `.io` / `.xyz`
+- `solanamint.com`
+- `tokenlauncher.io`
+- `memecoinmaker.xyz`
+
+## 🔧 Configuration
+
+### Environment Variables (Optional)
+Create `.env.local`:
+```env
+NEXT_PUBLIC_SOLANA_NETWORK=devnet
+NEXT_PUBLIC_PAYMENT_WALLET=543pQyP9nm3XYkUFDYKxCKUkWFeu1dud7eV5nexuvKgq
 ```
 
-2. Install dependencies:
-```bash
-npm install
-```
+### Network Settings
+- Currently configured for **Solana Devnet**
+- Payment wallet: `543pQyP9nm3XYkUFDYKxCKUkWFeu1dud7eV5nexuvKgq`
+- Base token creation fee: **0.07 SOL**
+- Authority revocation: **+0.01 SOL each**
 
-3. Run the development server:
-```bash
-npm run dev
-```
+## 📱 Production Checklist
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+- ✅ Build successful
+- ✅ Wallet integration tested
+- ✅ Token creation functional
+- ✅ Responsive design
+- ✅ Error handling
+- ✅ Loading states
+- ✅ Success notifications
 
-## 📱 How to Use
+## 🎯 Next Steps
 
-### 1. Connect Your Wallet
-- Click "Connect Wallet" in the top navigation
-- Select Phantom wallet from the modal
-- Approve the connection
+1. **Deploy to Production**
+2. **Set up Custom Domain**
+3. **Add Analytics** (Google Analytics, Plausible)
+4. **Add SEO Optimization**
+5. **Consider Mainnet Migration**
 
-### 2. Fill Token Details
-- **Token Name**: Your token's full name (e.g., "DogeMoon")
-- **Token Symbol**: 3-5 character ticker (e.g., "DOGE")
-- **Total Supply**: Number of tokens to create
-- **Description**: Brief description of your token
-- **Logo**: Upload your token logo (optional)
+## 🔒 Security Notes
 
-### 3. Optional Metadata
-- **Creator Info**: Your name or handle
-- **Website**: Your project website
-- **Telegram**: Your Telegram channel
-- **Twitter**: Your X/Twitter handle
+- All transactions require user wallet approval
+- No private keys stored
+- Client-side only wallet interactions
+- Payment wallet configured for fee collection
 
-### 4. Authority Options
-- **Revoke Freeze Authority**: Prevents freezing tokens (+0.005 SOL)
-- **Revoke Mint Authority**: Prevents creating more tokens (+0.005 SOL)
-- **Revoke Update Authority**: Locks metadata permanently (+0.005 SOL)
-- **Revoke All**: Maximum security (+0.01 SOL)
+## 📞 Support
 
-### 5. Launch Your Token
-- Review the cost summary
-- Click "Launch My Token"
-- Approve the transaction in Phantom
-- Wait for confirmation
-
-### 6. Success!
-- View your token address and transaction ID
-- Share on social media
-- View on Solscan
-- Launch another token
-
-## 🔧 Development
-
-### Project Structure
-
-```
-src/
-├── app/                    # Next.js app directory
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout with wallet providers
-│   └── page.tsx           # Landing page
-├── components/            # React components
-│   ├── WalletProvider.tsx # Solana wallet integration
-│   ├── TokenLaunchForm.tsx # Main token creation form
-│   └── SuccessPage.tsx   # Success page after token creation
-└── services/             # Business logic
-    └── tokenService.ts   # Solana token creation service
-```
-
-### Key Components
-
-- **WalletProvider**: Manages Solana wallet connections
-- **TokenLaunchForm**: Main form for token creation with validation
-- **SuccessPage**: Displays token details and sharing options
-- **TokenService**: Handles blockchain interactions
-
-### Styling
-
-The app uses TailwindCSS with custom gradients and animations:
-
-- **Gradients**: Purple to blue theme matching Solana
-- **Animations**: Framer Motion for smooth interactions
-- **Responsive**: Mobile-first design
-- **Custom Classes**: `.btn-primary`, `.card-hover`, `.text-gradient`
-
-## 🔒 Security Features
-
-- **Authority Revocation**: Optional security features
-- **Transaction Validation**: Proper error handling
-- **Wallet Integration**: Secure wallet connection
-- **Input Validation**: Form validation and sanitization
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Deploy automatically
-
-### Environment Variables
-
-No environment variables required for basic functionality.
-
-## 📊 Cost Breakdown
-
-- **Base Token Creation**: 0.01 SOL
-- **Revoke Freeze Authority**: +0.005 SOL
-- **Revoke Mint Authority**: +0.005 SOL  
-- **Revoke Update Authority**: +0.005 SOL
-- **Revoke All Authorities**: +0.01 SOL
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
-## 🆘 Support
-
-- **Documentation**: Check this README
-- **Issues**: Open an issue on GitHub
-- **Discord**: Join our community
-
-## 🎯 Roadmap
-
-- [ ] Liquidity pool creation
-- [ ] Presale functionality
-- [ ] Airdrop tools
-- [ ] Token analytics
-- [ ] Multi-chain support
-- [ ] Advanced metadata options
+For deployment issues or questions:
+- Check build logs
+- Verify wallet connections
+- Test on Devnet first
+- Monitor Solscan for transactions
 
 ---
 
-**Built with ❤️ for the Solana community**
+**Ready for Launch!** 🚀 Your memecoin empire awaits!

@@ -10,6 +10,11 @@ export const metadata: Metadata = {
   description: "The ultimate no-code Solana memecoin launcher. No coding required. Just vibes.",
   keywords: ["solana", "memecoin", "token", "launcher", "crypto", "blockchain"],
   authors: [{ name: "MemeMint Team" }],
+  icons: {
+    icon: '/assets/FINAL MEMEMINT LOGO.png',
+    shortcut: '/assets/FINAL MEMEMINT LOGO.png',
+    apple: '/assets/FINAL MEMEMINT LOGO.png',
+  },
   openGraph: {
     title: "MemeMint - Launch Your Solana Memecoin",
     description: "The ultimate no-code Solana memecoin launcher",

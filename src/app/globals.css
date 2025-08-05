@@ -29,6 +29,14 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
+  background-image: 
+    linear-gradient(rgba(0, 255, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.05) 0%, transparent 70%),
+    radial-gradient(circle at 80% 20%, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
+  background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px, 600px 600px, 600px 600px;
 }
 
 /* Dark theme base */
@@ -40,12 +48,14 @@ body {
 
 /* Professional glass navigation */
 .nav-glass {
-  background: rgba(10, 10, 11, 0.75);
+  background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50px;
+  padding: 12px 80px;
   margin: 16px;
-  padding: 8px 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 800px;
 }
 
 /* Modern cards */
@@ -69,26 +79,64 @@ body {
 
 /* Premium buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-dark) 100%);
-  color: var(--bg-primary);
-  font-weight: 700;
-  padding: 16px 32px;
-  border-radius: 16px;
-  border: none;
+  background: #ab9ff2 !important;
+  color: white !important;
+  border: none !important;
+  padding: 8px 20px;
+  border-radius: 50px !important;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(171, 159, 242, 0.4) !important;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  font-size: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 32px rgba(0, 255, 136, 0.3);
+  font-size: 14px;
+  height: 36px;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 255, 136, 0.4);
-  background: linear-gradient(135deg, #00ff88 0%, #00e07a 100%);
+  box-shadow: 0 8px 25px rgba(171, 159, 242, 0.5) !important;
+  background: #9b8ef0 !important;
+}
+
+/* Wallet Adapter Button Overrides */
+.wallet-adapter-button,
+.wallet-adapter-button-trigger {
+  background: #ab9ff2 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 50px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 15px rgba(171, 159, 242, 0.4) !important;
+  transition: all 0.3s ease !important;
+}
+
+.wallet-adapter-button:hover,
+.wallet-adapter-button-trigger:hover,
+.wallet-adapter-button:not([disabled]):hover {
+  background: #9b8ef0 !important;
+  box-shadow: 0 8px 25px rgba(171, 159, 242, 0.5) !important;
+  transform: translateY(-2px) !important;
+}
+
+.wallet-adapter-button:not([disabled]):focus-visible {
+  background: #ab9ff2 !important;
+  box-shadow: 0 4px 15px rgba(171, 159, 242, 0.4) !important;
+}
+
+/* Override any wallet adapter default styles */
+button[class*="wallet-adapter"] {
+  background: #ab9ff2 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 50px !important;
+}
+
+button[class*="wallet-adapter"]:hover {
+  background: #9b8ef0 !important;
 }
 
 .btn-secondary {
@@ -380,4 +428,14 @@ html {
 ::selection {
   background: rgba(0, 255, 136, 0.3);
   color: white;
+}
+
+/* Reviews scroll animation */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
 }
