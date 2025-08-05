@@ -1,36 +1,180 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 MemeMint - Solana Memecoin Launcher
 
-## Getting Started
+The ultimate no-code Solana memecoin launcher. Launch your memecoin in 30 seconds with zero coding required.
 
-First, run the development server:
+## ✨ Features
 
+- **No-Code Token Creation**: Create Solana tokens without any programming knowledge
+- **Phantom Wallet Integration**: Seamless wallet connection and transaction signing
+- **Professional UI/UX**: Modern, responsive design with smooth animations
+- **Authority Management**: Optional authority revocation for enhanced security
+- **Metadata Support**: Full token metadata with logos and descriptions
+- **Instant Deployment**: Tokens are live on Solana in seconds
+- **Shareable Links**: Easy sharing and verification on Solscan
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 14, TypeScript, TailwindCSS
+- **Animations**: Framer Motion
+- **Wallet**: @solana/wallet-adapter (Phantom support)
+- **Blockchain**: @solana/web3.js, @solana/spl-token
+- **Icons**: Lucide React
+- **Deployment**: Vercel-ready
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- Phantom wallet browser extension
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd mememint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Run the development server:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## 📱 How to Use
 
-To learn more about Next.js, take a look at the following resources:
+### 1. Connect Your Wallet
+- Click "Connect Wallet" in the top navigation
+- Select Phantom wallet from the modal
+- Approve the connection
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Fill Token Details
+- **Token Name**: Your token's full name (e.g., "DogeMoon")
+- **Token Symbol**: 3-5 character ticker (e.g., "DOGE")
+- **Total Supply**: Number of tokens to create
+- **Description**: Brief description of your token
+- **Logo**: Upload your token logo (optional)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 3. Optional Metadata
+- **Creator Info**: Your name or handle
+- **Website**: Your project website
+- **Telegram**: Your Telegram channel
+- **Twitter**: Your X/Twitter handle
 
-## Deploy on Vercel
+### 4. Authority Options
+- **Revoke Freeze Authority**: Prevents freezing tokens (+0.005 SOL)
+- **Revoke Mint Authority**: Prevents creating more tokens (+0.005 SOL)
+- **Revoke Update Authority**: Locks metadata permanently (+0.005 SOL)
+- **Revoke All**: Maximum security (+0.01 SOL)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 5. Launch Your Token
+- Review the cost summary
+- Click "Launch My Token"
+- Approve the transaction in Phantom
+- Wait for confirmation
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 6. Success!
+- View your token address and transaction ID
+- Share on social media
+- View on Solscan
+- Launch another token
+
+## 🔧 Development
+
+### Project Structure
+
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── globals.css        # Global styles
+│   ├── layout.tsx         # Root layout with wallet providers
+│   └── page.tsx           # Landing page
+├── components/            # React components
+│   ├── WalletProvider.tsx # Solana wallet integration
+│   ├── TokenLaunchForm.tsx # Main token creation form
+│   └── SuccessPage.tsx   # Success page after token creation
+└── services/             # Business logic
+    └── tokenService.ts   # Solana token creation service
+```
+
+### Key Components
+
+- **WalletProvider**: Manages Solana wallet connections
+- **TokenLaunchForm**: Main form for token creation with validation
+- **SuccessPage**: Displays token details and sharing options
+- **TokenService**: Handles blockchain interactions
+
+### Styling
+
+The app uses TailwindCSS with custom gradients and animations:
+
+- **Gradients**: Purple to blue theme matching Solana
+- **Animations**: Framer Motion for smooth interactions
+- **Responsive**: Mobile-first design
+- **Custom Classes**: `.btn-primary`, `.card-hover`, `.text-gradient`
+
+## 🔒 Security Features
+
+- **Authority Revocation**: Optional security features
+- **Transaction Validation**: Proper error handling
+- **Wallet Integration**: Secure wallet connection
+- **Input Validation**: Form validation and sanitization
+
+## 🚀 Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Deploy automatically
+
+### Environment Variables
+
+No environment variables required for basic functionality.
+
+## 📊 Cost Breakdown
+
+- **Base Token Creation**: 0.01 SOL
+- **Revoke Freeze Authority**: +0.005 SOL
+- **Revoke Mint Authority**: +0.005 SOL  
+- **Revoke Update Authority**: +0.005 SOL
+- **Revoke All Authorities**: +0.01 SOL
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 🆘 Support
+
+- **Documentation**: Check this README
+- **Issues**: Open an issue on GitHub
+- **Discord**: Join our community
+
+## 🎯 Roadmap
+
+- [ ] Liquidity pool creation
+- [ ] Presale functionality
+- [ ] Airdrop tools
+- [ ] Token analytics
+- [ ] Multi-chain support
+- [ ] Advanced metadata options
+
+---
+
+**Built with ❤️ for the Solana community**

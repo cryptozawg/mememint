@@ -1,102 +1,226 @@
-import Image from "next/image";
+'use client';
+
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { Rocket, Crown } from 'lucide-react';
+import TokenLaunchForm from '@/components/TokenLaunchForm';
+import SuccessPage from '@/components/SuccessPage';
+import Image from 'next/image';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { connected } = useWallet();
+  const [showLaunchForm, setShowLaunchForm] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [tokenData, setTokenData] = useState<any>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const scrollToLaunch = () => {
+    setShowLaunchForm(true);
+    setTimeout(() => {
+      const element = document.getElementById('launch-form');
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  const handleLaunchSuccess = (data: any) => {
+    setTokenData(data);
+    setShowSuccess(true);
+  };
+
+  const handleLaunchAnother = () => {
+    setShowSuccess(false);
+    setShowLaunchForm(false);
+    setTokenData(null);
+  };
+
+  if (showSuccess && tokenData) {
+    return <SuccessPage tokenData={tokenData} onLaunchAnother={handleLaunchAnother} />;
+  }
+
+  if (showLaunchForm) {
+    return <TokenLaunchForm onSuccess={handleLaunchSuccess} />;
+  }
+
+  return (
+    <div className="min-h-screen dark-theme relative overflow-hidden">
+      {/* Floating 3D Coins - Top Layer */}
+      <div className="fixed inset-0 pointer-events-none z-50">
+        <motion.div
+          animate={{ 
+            y: [0, -30, 0],
+            rotate: [0, 10, 0]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="floating-coin absolute top-32 left-16"
+        >
+          <Image
+            src="/assets/Solana 3d coin image.png"
+            alt="Solana Coin"
+            width={120}
+            height={120}
+            className="w-30 h-30"
+          />
+        </motion.div>
+        <motion.div
+          animate={{ 
+            y: [0, 25, 0],
+            rotate: [0, -15, 0]
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="floating-coin absolute top-48 right-20"
+        >
+          <Image
+            src="/assets/Shina Inu 3d image.webp"
+            alt="Shina Inu"
+            width={100}
+            height={100}
+            className="w-25 h-25"
+          />
+        </motion.div>
+        <motion.div
+          animate={{ 
+            y: [0, -20, 0],
+            rotate: [0, 8, 0]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="floating-coin absolute bottom-32 left-24"
+        >
+          <Image
+            src="/assets/bonk 3d image.webp"
+            alt="Bonk"
+            width={110}
+            height={110}
+            className="w-28 h-28"
+          />
+        </motion.div>
+        <motion.div
+          animate={{ 
+            y: [0, 35, 0],
+            rotate: [0, -12, 0]
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          className="floating-coin absolute bottom-48 right-16"
+        >
+          <Image
+            src="/assets/Solana 3d coin image.png"
+            alt="Solana Coin"
+            width={90}
+            height={90}
+            className="w-23 h-23"
+          />
+        </motion.div>
+      </div>
+
+      {/* Professional Pill Navigation - Full Width */}
+      <nav className="fixed top-0 w-full z-40">
+        <div className="nav-glass max-w-4xl mx-auto flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <Image
+              src="/assets/FINAL MEMEMINT LOGO.png"
+              alt="MemeMint Logo"
+              width={32}
+              height={32}
+              className="w-8 h-8"
+            />
+            <span className="text-lg font-bold gradient-text">MemeMint</span>
+          </div>
+          <WalletMultiButton className="btn-primary !py-2 !px-4 !text-sm" />
+        </div>
+      </nav>
+
+      {/* Hero Section - Perfectly Centered */}
+      <section className="pt-32 pb-12 px-4 relative z-10">
+        <div className="w-full max-w-6xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="flex flex-col items-center"
+          >
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-500/30 px-6 py-3 rounded-full mb-8 backdrop-blur-sm">
+              <Crown className="w-4 h-4 text-green-400" />
+              <span className="text-sm font-medium text-green-300">The number 1 memecoin launcher</span>
+            </div>
+            
+            <h1 className="text-6xl md:text-8xl font-normal mb-6 leading-tight text-center">
+              Mint your Solana Memecoin in{' '}
+              <span className="gradient-text font-medium">seconds</span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed text-center">
+              No code. No hustle. Just money earnt.
+            </p>
+          </motion.div>
+
+          {/* Earnings Screenshot - Perfectly Centered */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="w-full flex justify-center mb-16"
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/assets/EarningsScreenshotmememint.png"
+              alt="MemeMint Earnings"
+              width={600}
+              height={320}
+              className="rounded-2xl shadow-2xl mx-auto"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </motion.div>
+
+          {/* Frosted Pill Slider Button - Longer and Centered */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            className="w-full flex justify-center"
           >
-            Read our docs
-          </a>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={scrollToLaunch}
+              className="relative bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-2 w-80 h-16 flex items-center justify-between overflow-hidden group"
+            >
+              <motion.div
+                className="absolute left-2 top-2 bottom-2 bg-white rounded-full flex items-center justify-center px-8 shadow-lg"
+                whileHover={{ x: 120 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              >
+                <span className="text-black font-semibold">Get Started</span>
+              </motion.div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-white/60 font-medium text-lg">Get Started</span>
+              </div>
+            </motion.button>
+          </motion.div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Footer */}
+      <footer className="section-darker py-16 relative z-10 border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-3 mb-6">
+              <Image
+                src="/assets/FINAL MEMEMINT LOGO.png"
+                alt="MemeMint Logo"
+                width={40}
+                height={40}
+                className="w-10 h-10"
+              />
+              <span className="text-3xl font-bold gradient-text">MemeMint</span>
+            </div>
+            <p className="text-gray-400 mb-8 text-lg">
+              The number 1 memecoin launcher on Solana
+            </p>
+            <div className="flex justify-center space-x-8 text-gray-400">
+              <a href="#" className="hover:text-green-400 transition-colors">Terms</a>
+              <a href="#" className="hover:text-green-400 transition-colors">Privacy</a>
+              <a href="#" className="hover:text-green-400 transition-colors">Support</a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
