@@ -265,24 +265,24 @@ export default function Home() {
             </motion.div>
 
             {/* Features Content Grid */}
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-6xl mx-auto">
               {/* Frosted Container Box */}
-              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-12">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-8 lg:p-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
                   
                   {/* Left Side - Phone Mockup */}
                   <motion.div
                     initial={{ opacity: 0, x: -50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="relative flex justify-center lg:justify-start"
+                    className="relative flex justify-center lg:justify-center items-start"
                   >
                     <Image
                       src="/assets/Bottom page earnings image.png"
                       alt="MemeMint Mobile App"
-                      width={300}
-                      height={600}
-                      className="w-auto h-96 max-w-xs"
+                      width={250}
+                      height={500}
+                      className="w-auto h-80 max-w-xs"
                     />
                   </motion.div>
 
@@ -291,33 +291,33 @@ export default function Home() {
                     initial={{ opacity: 0, x: 50 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.3 }}
-                    className="space-y-8"
+                    className="space-y-6"
                   >
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-2 gap-6 mb-12">
+                    <div className="grid grid-cols-2 gap-4 mb-6">
                       {/* 99.9% Success Rate */}
-                      <div className="bg-white rounded-2xl p-8 transform rotate-3 hover:rotate-1 transition-transform duration-300 text-center">
-                        <div className="text-4xl font-bold text-black mb-2">99.9%</div>
-                        <div className="text-gray-700 font-medium text-sm">Successful Token Launches</div>
+                      <div className="bg-white rounded-2xl p-6 transform rotate-3 hover:rotate-1 transition-transform duration-300 text-center">
+                        <div className="text-3xl font-bold text-black mb-1">99.9%</div>
+                        <div className="text-gray-700 font-medium text-xs">Successful Token Launches</div>
                       </div>
 
                       {/* 85%+ Returned Users */}
-                      <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-8 transform -rotate-3 hover:-rotate-1 transition-transform duration-300 text-center">
-                        <div className="text-4xl font-bold text-white mb-2">85%+</div>
-                        <div className="text-green-100 font-medium text-sm">Returned Users</div>
+                      <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-6 transform -rotate-3 hover:-rotate-1 transition-transform duration-300 text-center">
+                        <div className="text-3xl font-bold text-white mb-1">85%+</div>
+                        <div className="text-green-100 font-medium text-xs">Returned Users</div>
                       </div>
                     </div>
 
                     {/* Content Box */}
-                    <div className="bg-white rounded-3xl p-8">
-                      <h3 className="text-2xl font-bold text-black mb-4 text-center">
+                    <div className="bg-white rounded-3xl p-6">
+                      <h3 className="text-xl font-bold text-black mb-3 text-center">
                         Create & Deploy Your Token in Minutes
                       </h3>
-                      <p className="text-gray-700 text-lg leading-relaxed mb-8 text-center">
+                      <p className="text-gray-700 text-base leading-relaxed mb-6 text-center">
                         Turn your idea into reality with lightning-fast token creation. Whether for projects, communities, or innovation, deploy your Solana token in minutes - with ease, secure, and built for the future!
                       </p>
                       <div className="text-center">
-                        <Link href="/launch" className="inline-block bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300">
+                        <Link href="/launch" className="inline-block bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300 text-sm">
                           Create Token
                         </Link>
                       </div>
