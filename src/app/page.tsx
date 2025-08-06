@@ -259,67 +259,72 @@ export default function Home() {
                 Unlock the Full Potential of Your<br />
                 Solana Token <span className="gradient-text">Effortlessly</span>
               </h2>
-              <p className="text-xl text-gray-400 mt-8 max-w-4xl mx-auto">
+              <p className="text-xl text-gray-400 mt-8 max-w-4xl mx-auto text-center">
                 Create, manage, and launch your Solana token effortlessly with secure transactions, instant deployment, and zero coding required!
               </p>
             </motion.div>
 
             {/* Features Content Grid */}
             <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                
-                {/* Left Side - Phone Mockup */}
-                <motion.div
-                  initial={{ opacity: 0, x: -50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  className="relative"
-                >
-                  <Image
-                    src="/assets/Bottom page earnings image.png"
-                    alt="MemeMint Mobile App"
-                    width={400}
-                    height={800}
-                    className="w-full max-w-md mx-auto lg:mx-0"
-                  />
-                </motion.div>
+              {/* Frosted Container Box */}
+              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                  
+                  {/* Left Side - Phone Mockup */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                    className="relative flex justify-center lg:justify-start"
+                  >
+                    <Image
+                      src="/assets/Bottom page earnings image.png"
+                      alt="MemeMint Mobile App"
+                      width={300}
+                      height={600}
+                      className="w-auto h-96 max-w-xs"
+                    />
+                  </motion.div>
 
-                {/* Right Side - Stats Cards and Content */}
-                <motion.div
-                  initial={{ opacity: 0, x: 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  className="space-y-8"
-                >
-                  {/* Stats Cards */}
-                  <div className="grid grid-cols-2 gap-6 mb-12">
-                    {/* 99.9% Success Rate */}
-                    <div className="bg-white rounded-2xl p-6 transform rotate-3 hover:rotate-1 transition-transform duration-300">
-                      <div className="text-5xl font-bold text-black mb-2">99.9%</div>
-                      <div className="text-gray-700 font-medium">Successful Token Launches</div>
+                  {/* Right Side - Stats Cards and Content */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    className="space-y-8"
+                  >
+                    {/* Stats Cards */}
+                    <div className="grid grid-cols-2 gap-6 mb-12">
+                      {/* 99.9% Success Rate */}
+                      <div className="bg-white rounded-2xl p-8 transform rotate-3 hover:rotate-1 transition-transform duration-300 text-center">
+                        <div className="text-4xl font-bold text-black mb-2">99.9%</div>
+                        <div className="text-gray-700 font-medium text-sm">Successful Token Launches</div>
+                      </div>
+
+                      {/* 85%+ Returned Users */}
+                      <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-8 transform -rotate-3 hover:-rotate-1 transition-transform duration-300 text-center">
+                        <div className="text-4xl font-bold text-white mb-2">85%+</div>
+                        <div className="text-green-100 font-medium text-sm">Returned Users</div>
+                      </div>
                     </div>
 
-                    {/* 85%+ Returned Users */}
-                    <div className="bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl p-6 transform -rotate-3 hover:-rotate-1 transition-transform duration-300">
-                      <div className="text-5xl font-bold text-white mb-2">85%+</div>
-                      <div className="text-purple-100 font-medium">Returned Users</div>
+                    {/* Content Box */}
+                    <div className="bg-white rounded-3xl p-8">
+                      <h3 className="text-2xl font-bold text-black mb-4 text-center">
+                        Create & Deploy Your Token in Minutes
+                      </h3>
+                      <p className="text-gray-700 text-lg leading-relaxed mb-8 text-center">
+                        Turn your idea into reality with lightning-fast token creation. Whether for projects, communities, or innovation, deploy your Solana token in minutes - with ease, secure, and built for the future!
+                      </p>
+                      <div className="text-center">
+                        <Link href="/launch" className="inline-block bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300">
+                          Create Token
+                        </Link>
+                      </div>
                     </div>
-                  </div>
+                  </motion.div>
 
-                  {/* Content Box */}
-                  <div className="bg-white rounded-3xl p-8">
-                    <h3 className="text-2xl font-bold text-black mb-4">
-                      Create & Deploy Your Token in Minutes
-                    </h3>
-                    <p className="text-gray-700 text-lg leading-relaxed mb-8">
-                      Turn your idea into reality with lightning-fast token creation. Whether for projects, communities, or innovation, deploy your Solana token in minutes - with ease, secure, and built for the future!
-                    </p>
-                    <Link href="/launch" className="inline-block bg-black text-white px-8 py-4 rounded-full font-semibold hover:bg-gray-800 transition-colors duration-300">
-                      Create Token
-                    </Link>
-                  </div>
-                </motion.div>
-
+                </div>
               </div>
             </div>
           </section>
