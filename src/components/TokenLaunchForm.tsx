@@ -323,7 +323,7 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
           {/* Logo Upload */}
           <div className="flex flex-col items-center" style={{marginBottom: '30px'}}>
             <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Token Logo (Optional)</label>
-            <div className="w-full border-2 border-dashed border-white/20 rounded-3xl p-12 text-center hover:border-green-500/50 transition-colors">
+            <div className="w-full border-2 border-dashed border-white/20 rounded-3xl p-16 text-center hover:border-green-500/50 transition-colors">
               {logoPreview ? (
                 <div className="space-y-6">
                   <img src={logoPreview} alt="Logo preview" className="w-32 h-32 mx-auto rounded-3xl object-cover" />
@@ -337,9 +337,9 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
                   </button>
                 </div>
               ) : (
-                <div>
-                  <div className="w-20 h-20 bg-white/10 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <Upload className="w-10 h-10 text-gray-400" />
+                <div className="flex flex-col items-center justify-center">
+                  <div className="flex items-center justify-center mb-6">
+                    <Upload className="w-12 h-12 text-gray-400" />
                   </div>
                   <p className="text-gray-400 mb-6 text-xl">Upload your token logo</p>
                   <button
@@ -409,9 +409,9 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
           </div>
 
           {/* Cost Summary */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl p-12" style={{marginTop: '30px'}}>
+          <div className="bg-white/5 border border-white/10 rounded-3xl px-16 py-12" style={{marginTop: '30px'}}>
             <h3 className="text-2xl font-normal text-white text-center" style={{marginBottom: '30px'}}>Cost Summary</h3>
-            <div className="text-lg font-light">
+            <div className="text-lg font-light px-4">
               <div className="flex justify-between text-gray-300" style={{marginBottom: '30px'}}>
                 <span>Base token creation:</span>
                 <span className="font-normal">0.07 SOL</span>
@@ -439,7 +439,7 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
           </div>
 
           {/* Launch Button - Matching Homepage Style */}
-          <div className="flex justify-center mb-20" style={{marginTop: '30px'}}>
+          <div className="flex justify-center mb-32" style={{marginTop: '50px'}}>
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
