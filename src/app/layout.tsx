@@ -10,14 +10,7 @@ export const metadata: Metadata = {
   description: "🚀 The leading no-code Solana memecoin launcher. Create and deploy SPL tokens instantly with professional-grade features.",
   keywords: ["solana", "memecoin", "token", "launcher", "crypto", "blockchain", "SPL", "defi"],
   authors: [{ name: "MemeMint Team" }],
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
-    ],
-    shortcut: '/favicon.ico',
-    apple: '/icon.png',
-  },
+
   openGraph: {
     title: "MemeMint - Launch Your Solana Memecoin",
     description: "🚀 The leading no-code Solana memecoin launcher",
