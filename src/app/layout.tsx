@@ -6,25 +6,30 @@ import { WalletProvider } from "@/components/WalletProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MemeMint - Launch Your Solana Memecoin in 30 Seconds",
-  description: "The ultimate no-code Solana memecoin launcher. No coding required. Just vibes.",
-  keywords: ["solana", "memecoin", "token", "launcher", "crypto", "blockchain"],
+  title: "MemeMint - Launch Your Solana Memecoin in Seconds",
+  description: "🚀 The leading no-code Solana memecoin launcher. Create and deploy SPL tokens instantly with professional-grade features.",
+  keywords: ["solana", "memecoin", "token", "launcher", "crypto", "blockchain", "SPL", "defi"],
   authors: [{ name: "MemeMint Team" }],
   icons: {
-    icon: '/assets/FINAL MEMEMINT LOGO.png',
-    shortcut: '/assets/FINAL MEMEMINT LOGO.png',
-    apple: '/assets/FINAL MEMEMINT LOGO.png',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '512x512' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/icon.png',
   },
   openGraph: {
     title: "MemeMint - Launch Your Solana Memecoin",
-    description: "The ultimate no-code Solana memecoin launcher",
+    description: "🚀 The leading no-code Solana memecoin launcher",
     type: "website",
-    url: "https://mememint.app",
+    url: "https://mememint.vercel.app",
+    images: ['/icon.png'],
   },
   twitter: {
     card: "summary_large_image",
     title: "MemeMint - Launch Your Solana Memecoin",
-    description: "The ultimate no-code Solana memecoin launcher",
+    description: "🚀 The leading no-code Solana memecoin launcher",
+    images: ['/icon.png'],
   },
 };
 

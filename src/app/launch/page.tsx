@@ -37,20 +37,21 @@ export default function LaunchPage() {
   return (
     <div className="dark-theme relative overflow-hidden min-h-screen">
       {/* Header */}
-      <header className="fixed top-4 left-1/2 transform -translate-x-1/2 z-40 w-full max-w-4xl px-4">
-        <div className="glass-header px-8 py-4 rounded-full flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer">
-            <img
-              src="/assets/FINAL MEMEMINT LOGO.png"
-              alt="MemeMint"
-              className="w-8 h-8"
-            />
-            <span className="text-white text-xl font-bold">MemeMint</span>
-          </Link>
-          
-          <ClientOnly>
-            <WalletMultiButton />
-          </ClientOnly>
+      <header className="fixed top-0 w-full z-50 py-8">
+        <div className="flex justify-center">
+          <div className="nav-glass flex justify-between items-center">
+            <Link href="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity cursor-pointer">
+              <img
+                src="/assets/FINAL MEMEMINT LOGO.png"
+                alt="MemeMint Logo"
+                className="w-8 h-8"
+              />
+              <span className="text-lg font-bold gradient-text">MemeMint</span>
+            </Link>
+            <ClientOnly>
+              <WalletMultiButton className="btn-primary" />
+            </ClientOnly>
+          </div>
         </div>
       </header>
 
