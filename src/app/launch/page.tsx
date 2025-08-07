@@ -55,17 +55,7 @@ export default function LaunchPage() {
         </div>
       </header>
 
-      {/* Background Pattern */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800"></div>
-        <div className="absolute inset-0 bg-gradient-to-tl from-green-900/20 via-transparent to-green-600/10"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5"></div>
-        
-        {/* Animated background elements */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-radial from-green-500/20 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-radial from-blue-500/10 to-transparent rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-radial from-green-500/5 to-transparent rounded-full blur-3xl"></div>
-      </div>
+
 
       <div className="h-32"></div>
 
@@ -91,6 +81,20 @@ export default function LaunchPage() {
           />
         )}
       </AnimatePresence>
+
+      {/* Footer - Same as homepage */}
+      <footer className="py-8 relative z-10 mt-24">
+        <div className="flex justify-center">
+          <div className="flex items-center space-x-3">
+            <img
+              src="/assets/FINAL MEMEMINT LOGO.png"
+              alt="MemeMint Logo"
+              className="w-6 h-6"
+            />
+            <span className="text-gray-400 text-sm">© MemeMint 2025</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 } 

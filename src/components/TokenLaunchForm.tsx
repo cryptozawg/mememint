@@ -188,7 +188,7 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
                   className="w-full bg-transparent text-white text-lg placeholder-gray-500 focus:outline-none text-center"
-                  placeholder="Luna Coin"
+                  placeholder="Meme Trump"
                   required
                 />
               </div>
@@ -323,7 +323,7 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
           {/* Logo Upload */}
           <div className="flex flex-col items-center" style={{marginBottom: '30px'}}>
             <label className="block text-white text-lg font-normal text-center" style={{marginBottom: '30px'}}>Token Logo (Optional)</label>
-            <div className="w-full border-2 border-dashed border-white/20 rounded-3xl p-16 text-center hover:border-green-500/50 transition-colors">
+            <div className="w-full border-2 border-dashed border-white/20 rounded-3xl p-16 text-center hover:border-[#00ff88]/50 transition-colors">
               {logoPreview ? (
                 <div className="space-y-6">
                   <img src={logoPreview} alt="Logo preview" className="w-32 h-32 mx-auto rounded-3xl object-cover" />
@@ -369,7 +369,7 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8" style={{marginBottom: '30px'}}>
               {/* Revoke Freeze */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-12">
                 <div className="flex items-center justify-between" style={{marginBottom: '30px'}}>
                   <h3 className="text-lg font-normal text-white">Revoke Freeze</h3>
                   <label className="toggle-switch">
@@ -386,7 +386,7 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
               </div>
 
               {/* Revoke Mint */}
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-8">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-12">
                 <div className="flex items-center justify-between" style={{marginBottom: '30px'}}>
                   <h3 className="text-lg font-normal text-white">Revoke Mint</h3>
                   <label className="toggle-switch">
@@ -409,9 +409,9 @@ export default function TokenLaunchForm({ onSuccess }: TokenLaunchFormProps) {
           </div>
 
           {/* Cost Summary */}
-          <div className="bg-white/5 border border-white/10 rounded-3xl px-16 py-12" style={{marginTop: '30px'}}>
+          <div className="bg-white/5 border border-white/10 rounded-3xl px-20 py-16" style={{marginTop: '30px'}}>
             <h3 className="text-2xl font-normal text-white text-center" style={{marginBottom: '30px'}}>Cost Summary</h3>
-            <div className="text-lg font-light px-4">
+            <div className="text-lg font-light px-8">
               <div className="flex justify-between text-gray-300" style={{marginBottom: '30px'}}>
                 <span>Base token creation:</span>
                 <span className="font-normal">0.07 SOL</span>
