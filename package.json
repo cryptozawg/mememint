@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@metaplex-foundation/js": "^0.20.1",
     "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
     "@raydium-io/raydium-sdk-v2": "^0.2.8-alpha",
     "@solana/spl-token": "^0.4.13",

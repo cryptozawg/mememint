@@ -24,6 +24,9 @@ import {
 // Payment wallet address
 export const PAYMENT_WALLET = new PublicKey('543pQyP9nm3XYkUFDYKxCKUkWFeu1dud7eV5nexuvKgq');
 
+// Metaplex Token Metadata Program ID
+const METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s');
+
 export interface TokenCreationParams {
   name: string;
   symbol: string;
@@ -188,7 +191,27 @@ export class TokenService {
         )
       );
 
-      // Step 5: Revoke authorities (if requested)
+      // Step 5: Create metadata account
+      console.log('Creating metadata account...');
+      const metadataAccount = PublicKey.findProgramAddressSync(
+        [
+          Buffer.from('metadata'),
+          METADATA_PROGRAM_ID.toBuffer(),
+          mintKeypair.publicKey.toBuffer(),
+        ],
+        METADATA_PROGRAM_ID
+      )[0];
+
+      const metadataInstruction = this.createMetadataInstruction(
+        mintKeypair.publicKey,
+        metadataAccount,
+        params.name,
+        params.symbol
+      );
+
+      tokenCreationTransaction.add(metadataInstruction);
+
+      // Step 6: Revoke authorities (if requested)
       if (params.revokeMint) {
         console.log('Adding mint authority revocation...');
         tokenCreationTransaction.add(
@@ -231,7 +254,7 @@ export class TokenService {
       const result = {
         tokenAddress: mintKeypair.publicKey.toString(),
         transactionId: tokenSignature,
-        metadataAddress: '', // Simplified for now
+        metadataAddress: metadataAccount.toString(), // Return metadata address
       };
       
       console.log('=== TOKEN CREATION COMPLETED SUCCESSFULLY ===');
@@ -271,5 +294,33 @@ export class TokenService {
       console.error('Error getting token info:', error);
       throw error;
     }
+  }
+
+  // Helper function to create metadata account
+  private createMetadataInstruction(
+    mint: PublicKey,
+    metadataAccount: PublicKey,
+    name: string,
+    symbol: string,
+    uri: string = ''
+  ) {
+    const data = Buffer.from([
+      0, // Create metadata account instruction
+      ...Buffer.from(name),
+      ...Buffer.from(symbol),
+      ...Buffer.from(uri),
+    ]);
+
+    return {
+      programId: METADATA_PROGRAM_ID,
+      keys: [
+        { pubkey: metadataAccount, isSigner: false, isWritable: true },
+        { pubkey: mint, isSigner: false, isWritable: false },
+        { pubkey: mint, isSigner: false, isWritable: false }, // mint authority
+        { pubkey: mint, isSigner: false, isWritable: false }, // payer
+        { pubkey: mint, isSigner: false, isWritable: false }, // update authority
+      ],
+      data,
+    };
   }
 } 
